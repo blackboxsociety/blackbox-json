@@ -293,7 +293,7 @@ class JsonParserSpec extends Specification {
 
   """An object literal of {  "a"  : 42, "b"  : "v"  , "c"  : [1, 2] , "d"  : true }""" should {
     "correctly parse" in {
-      val in  = "{\"a\": 42, \"b\": \"v\", \"c\": [1, 2], \"d\": true}"
+      val in  = "{  \"a\"  : 42, \"b\"  : \"v\"  , \"c\"  : [1, 2] , \"d\"  : true }"
       val out = Success(JsObject(Map(
         "a" -> JsInt(42),
         "b" -> JsString("v"),
