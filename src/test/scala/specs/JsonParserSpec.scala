@@ -222,31 +222,55 @@ class JsonParserSpec extends Specification {
     }
   }
 
-  "An empty array litteral of []" should {
+  "A null literal" should {
+    "parse correctly into a JsNull" in {
+      JsonParser.parse("null") must beEqualTo(Success(JsNull))
+    }
+  }
+
+  "A null literal with whitespace prior to it" should {
+    "parse correctly into a JsNull" in {
+      JsonParser.parse("   null") must beEqualTo(Success(JsNull))
+    }
+  }
+
+  "A null literal with whitespace after it" should {
+    "parse correctly into a JsNull" in {
+      JsonParser.parse("null   ") must beEqualTo(Success(JsNull))
+    }
+  }
+
+  "A null literal with whitespace before and after it" should {
+    "parse correctly into a JsNull" in {
+      JsonParser.parse("   null   ") must beEqualTo(Success(JsNull))
+    }
+  }
+
+  "An empty array literal of []" should {
     "parse correctly as JsArray(Seq())" in {
       JsonParser.parse("[]") must beEqualTo(Success(JsArray(List())))
     }
   }
 
-  "An empty array litteral of [] with whitespace prior to it" should {
+  "An empty array literal of [] with whitespace prior to it" should {
     "parse correctly as JsArray(Seq())" in {
       JsonParser.parse("   []") must beEqualTo(Success(JsArray(List())))
     }
   }
 
-  "An empty array litteral of [] with whitespace after it" should {
+  "An empty array literal of [] with whitespace after it" should {
     "parse correctly as JsArray(Seq())" in {
       JsonParser.parse("[]   ") must beEqualTo(Success(JsArray(List())))
     }
   }
 
-  "An empty array litteral of [] with whitespace before and after it" should {
+  "An empty array literal of [] with whitespace before and after it" should {
     "parse correctly as JsArray(Seq())" in {
       JsonParser.parse("    []   ") must beEqualTo(Success(JsArray(List())))
     }
   }
 
-  "An array litteral of [42, \\\"lol\\\", {}, true, [6]]" should {
+  "An array literal of [42, \\\"lol\\\", {}, true, [6]]" should {
     "parse correctly" in {
       val r = Success(JsArray(List(JsInt(42), JsString("lol"), JsObject(Map()), JsBoolean(true), JsArray(List(JsInt(6))))))
       JsonParser.parse("[42, \"lol\", {}, true, [6]]") must beEqualTo(r)

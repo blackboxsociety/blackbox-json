@@ -50,33 +50,15 @@ object JsonParser extends RegexParsers {
 
   val obj: Parser[JsObject] = "{" ~> padded(objPairs) <~ "}" ^^ { n => JsObject(n) }
 
+  val nullP: Parser[JsNull.type] = "null" ^^ { _ => JsNull }
+
   private def padded[A](parser: Parser[A]): Parser[A] = opt(whiteSpace) ~> parser <~ opt(whiteSpace)
 
-  def value: Parser[JsValue] = padded(boolean | string | float | int | array | obj)
+  def value: Parser[JsValue] = padded(boolean | string | float | int | array | obj | nullP)
 
   def parse(input: String): Validation[String, JsValue] = parseAll(value, input) match {
     case Success(json, _)    => scalaz.Success(json)
     case NoSuccess(error, _) => scalaz.Failure(error)
   }
 
-}
-
-sealed trait JsValue
-case class JsBoolean(value: Boolean) extends JsValue {
-  override def toString = if (value) "true" else "false"
-}
-case class JsString(value: String) extends JsValue {
-  override def toString = value
-}
-case class JsInt(value: Int) extends JsValue {
-  override def toString = value.toString
-}
-case class JsFloat(value: Float) extends JsValue {
-  override def toString = value.toString
-}
-case class JsArray(value: Seq[JsValue]) extends JsValue {
-  override def toString = "[" + value.map(_.toString).mkString(", ") + "]"
-}
-case class JsObject(value: Map[String, JsValue]) extends JsValue {
-  override def toString = "{" + value.toSeq.map({ n => "\"" + n._1 + "\": " + n._2.toString}).mkString(", ") + "}"
 }
